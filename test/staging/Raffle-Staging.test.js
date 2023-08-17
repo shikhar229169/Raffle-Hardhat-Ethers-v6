@@ -1,4 +1,4 @@
-const { ethers, network, getNamedAccounts } = require("hardhat");
+const { ethers, network, getNamedAccounts, deployments } = require("hardhat");
 const { localNetworks } = require("../../Helper-Hardhat-Config.js")
 const { assert, expect } = require("chai")
 
@@ -13,11 +13,14 @@ localNetworks.includes(network.name)
             const { deployer } = await getNamedAccounts()
             signer = await ethers.getSigner(deployer)
 
-            // const contracts = await deployments.fixture(["main"])
+            const _raffle = await deployments.get("Raffle")
+            console.log("Raffle Contract Address -", _raffle.address)
 
-            raffle = await ethers.getContractAt("Raffle", "0x28F096cB7dA06c27D51B4d5de43AA9563d2aC9Ca", signer)
+            // My Deployed Raffle Address: 0x28F096cB7dA06c27D51B4d5de43AA9563d2aC9Ca
+            raffle = await ethers.getContractAt("Raffle", _raffle.address, signer)
+            
             entranceFees = await raffle.getRaffleFees()
-            console.log(entranceFees)
+            console.log("Entrance Fees -", entranceFees)
         })
 
         describe("Raffle Working", () => {
